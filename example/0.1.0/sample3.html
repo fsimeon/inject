@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="inject-0.1.0.js"></script>
+</head>
+<body>
+<h1>Pointcuts</h1>
+<p>Items that haven't been properly externalized can still be captured. In this example, jQuery is loaded using the pointcuts in
+"view source". The "after" cut captures the results of jQuery.noConflict() and stores it as the module.exports. This makes $ available
+just like a developer would expect within their modules.</p>
+
+<p><a href="sample.html">Same Domain</a> | <a href="sample2.html">Alternate Domain</a> | <a href="sample3.html">Pointcuts</a></p>
+<p id="output-jq"></p>
+<button id="clearit">Clear Cache</button>
+
+<script type="text/javascript">
+document.getElementById("clearit").onclick = function() {
+  inject().clear();
+};
+
+inject().config({
+  path: "http://jakobo.github.com/inject/example/0.1.0/deps"
+});
+
+inject().modules({
+  "jQuery": {
+    path: "./jquery-1.6.4.min.js",
+    after: function() {
+      module.exports = jQuery.noConflict();
+    }
+  }
+});
+
+inject("foo", "jQuery", function(foo, $) {
+  document.getElementById("output-jq").innerHTML = $.toString();
+});
+</script>
+</body>
+</html>
